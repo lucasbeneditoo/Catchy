@@ -1,0 +1,341 @@
+
+    <Window xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:fluentIcons="using:FluentIcons.Avalonia"
+            xmlns:vm="using:Catchy.ViewModels"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d"
+            d:DesignWidth="800"
+            d:DesignHeight="450"
+            x:Class="Catchy.Views.MainWindow"
+            x:DataType="vm:MainViewModel"
+            Icon="/Assets/avalonia-logo.ico"
+            Title="Catchy"
+            Background="{DynamicResource BackgroundColor}">
+
+        <Design.DataContext>
+            <vm:MainViewModel />
+        </Design.DataContext>
+
+        <Window.Styles>
+
+            <!-- Trilha preenchida -->
+            <Style Selector="Slider#VolumeSlider:horizontal /template/ RepeatButton#PART_DecreaseButton /template/ Border#TrackBackground">
+                <Setter Property="Height" Value="4"/>
+                <Setter Property="Background" Value="{DynamicResource IconColor}"/>
+                <Setter Property="Margin" Value="0,0,-6,0"/>
+            </Style>
+
+            <!-- Trilha não preenchida -->
+            <Style Selector="Slider#VolumeSlider:horizontal /template/ RepeatButton#PART_IncreaseButton /template/ Border#TrackBackground">
+                <Setter Property="Height" Value="4"/>
+                <Setter Property="Background" Value="{DynamicResource BorderColor}"/>
+                <Setter Property="Margin" Value="0,0,-6,0"/>
+            </Style>
+
+            <!-- Bolinha -->
+            <Style Selector="Slider#VolumeSlider:horizontal /template/ Thumb">
+                <Setter Property="Width" Value="12"/>
+                <Setter Property="Height" Value="12"/>
+                <Setter Property="Background" Value="{DynamicResource IconColor}"/>
+            </Style>
+
+            <Style Selector="Slider#VolumeSlider:horizontal /template/ RepeatButton#PART_DecreaseButton">
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+
+        </Window.Styles>
+
+        <Grid RowDefinitions="*,100">
+
+            <!-- Conteúdo principal -->
+            <Grid Grid.Row="0">
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <TextBox Text="{Binding Greeting}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Barra inferior -->
+            <Border Grid.Row="1"
+                    Background="{DynamicResource BottomBarColor}"
+                    PointerExited="MiniPlayer_PointerExited">
+
+                <Grid>
+
+                    <!-- Controles do player -->
+                    <Grid ColumnDefinitions="1*, Auto, 1*">
+
+                        <!-- Informações da música -->
+                        <StackPanel Grid.Column="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Margin="30,0,0,0"
+                                    Orientation="Horizontal">
+
+                            <Border Width="70"
+                                    Height="70"
+                                    CornerRadius="10"
+                                    ClipToBounds="True"
+                                    Margin="0,0,12,0">
+
+                                <Image x:Name="CoverImage"
+                                    Stretch="UniformToFill"
+                                    RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                            </Border>
+
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock x:Name="SongNameText"
+                                        Text="Nome da Música"
+                                        FontWeight="Bold"
+                                        FontSize="18"
+                                        Foreground="{DynamicResource PrimaryTextColor}"
+                                        TextTrimming="CharacterEllipsis"
+                                        MaxWidth="180"/>
+
+                                <TextBlock x:Name="ArtistNameText"
+                                        Text="Artista"
+                                        FontSize="14"
+                                        Foreground="{DynamicResource SecondaryTextColor}"
+                                        TextTrimming="CharacterEllipsis"
+                                        MaxWidth="180"/>
+                            </StackPanel>
+
+                            <Button Width="41"
+                                    Height="41"
+                                    CornerRadius="25"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    VerticalAlignment="Center"
+                                    Margin="8,0,0,0">
+
+                                <fluentIcons:SymbolIcon
+                                    Symbol="Heart"
+                                    IconVariant="Regular"
+                                    Foreground="{DynamicResource IconColor}"
+                                    FontSize="20"/>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Controles de reprodução -->
+                        <StackPanel Grid.Column="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+
+                            <Button Width="35"
+                                    Height="35"
+                                    CornerRadius="25"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="PreviousButton_Click">
+
+                                <fluentIcons:SymbolIcon
+                                    Symbol="Previous"
+                                    IconVariant="Filled"
+                                    Foreground="{DynamicResource IconColor}"
+                                    FontSize="18"/>
+                            </Button>
+
+                            <Button Width="48"
+                                    Height="48"
+                                    CornerRadius="25"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="PlayButton_Click">
+
+                                <fluentIcons:SymbolIcon
+                                    x:Name="PlayIcon"
+                                    Symbol="Play"
+                                    IconVariant="Filled"
+                                    Foreground="{DynamicResource IconColor}"
+                                    FontSize="28"/>
+                            </Button>
+
+                            <Button Width="35"
+                                    Height="35"
+                                    CornerRadius="25"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="NextButton_Click">
+
+                                <fluentIcons:SymbolIcon
+                                    Symbol="Next"
+                                    IconVariant="Filled"
+                                    Foreground="{DynamicResource IconColor}"
+                                    FontSize="18"/>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Controles adicionais -->
+                        <StackPanel Grid.Column="2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Margin="0,0,20,0">
+
+                            <!-- Volume -->
+                            <Border x:Name="VolumeControl"
+                                    Background="Transparent"
+                                    VerticalAlignment="Center"
+                                    Padding="0">
+
+                                <Grid ColumnDefinitions="Auto,45"
+                                    VerticalAlignment="Center">
+
+                                    <Slider x:Name="VolumeSlider"
+                                            Grid.Column="0"
+                                            Width="100"
+                                            Height="45"
+                                            Minimum="0"
+                                            Maximum="100"
+                                            Value="50"
+                                            Opacity="0"
+                                            IsHitTestVisible="False"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,5,0"
+                                            ValueChanged="VolumeSlider_ValueChanged"
+                                            PointerPressed="VolumeSlider_PointerPressed">
+                                            
+                                            <Slider.Transitions>
+                                                <Transitions>
+                                                    <DoubleTransition Property="Opacity"
+                                                                    Duration="0:0:0.15"/>
+                                                </Transitions>
+                                            </Slider.Transitions>
+
+                                    </Slider>
+
+                                    <Button x:Name="VolumeButton"
+                                            Grid.Column="1"
+                                            Width="45"
+                                            Height="45"
+                                            CornerRadius="25"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            PointerEntered="VolumeButton_PointerEntered"
+                                            Click="VolumeButton_Click">
+
+                                        <fluentIcons:SymbolIcon
+                                            x:Name="VolumeIcon"
+                                            Symbol="Speaker1"
+                                            IconVariant="Filled"
+                                            Foreground="{DynamicResource IconColor}"
+                                            FontSize="24"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                            <!-- Repeat -->
+                            <Button Width="45"
+                                    Height="45"
+                                    CornerRadius="25"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="RepeatButton_Click">
+
+                                <fluentIcons:SymbolIcon
+                                    x:Name="RepeatIcon"
+                                    Symbol="ArrowRepeatAll"
+                                    IconVariant="Filled"
+                                    Foreground="{DynamicResource IconColor}"
+                                    FontSize="24"/>
+                            </Button>
+
+                            <!-- Shuffle -->
+                            <Button Width="45"
+                                    Height="45"
+                                    CornerRadius="25"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="ShuffleButton_Click">
+
+                                <fluentIcons:SymbolIcon
+                                    x:Name="ShuffleIcon"
+                                    Symbol="ArrowShuffle"
+                                    IconVariant="Filled"
+                                    Foreground="{DynamicResource IconColor}"
+                                    FontSize="24"/>
+                            </Button>
+
+                        </StackPanel>
+
+                    </Grid>
+
+                    <!-- Seekbar -->
+                    <Slider x:Name="ProgressSlider"
+                            Minimum="0"
+                            Maximum="1"
+                            Value="0"
+                            Height="30"
+                            Margin="0,-20,0,0"
+                            VerticalAlignment="Top"
+                            Padding="0"
+                            Background="Transparent"
+                            Foreground="{DynamicResource IconColor}"
+                            ValueChanged="ProgressSlider_ValueChanged">
+
+                        <Slider.Styles>
+
+                            <Style Selector="Slider:horizontal /template/ RepeatButton#PART_DecreaseButton">
+                                <Setter Property="Background" Value="{DynamicResource IconColor}"/>
+                            </Style>
+
+                            <Style Selector="Slider:horizontal /template/ RepeatButton#PART_DecreaseButton /template/ Border#TrackBackground">
+                                <Setter Property="Height" Value="4"/>
+                                <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+                                <Setter Property="Margin" Value="0"/>
+                            </Style>
+
+                            <Style Selector="Slider:horizontal /template/ RepeatButton#PART_IncreaseButton">
+                                <Setter Property="Background" Value="{DynamicResource BorderColor}"/>
+                            </Style>
+
+                            <Style Selector="Slider:horizontal /template/ RepeatButton#PART_IncreaseButton /template/ Border#TrackBackground">
+                                <Setter Property="Height" Value="4"/>
+                                <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+                            </Style>
+
+                            <Style Selector="Slider:horizontal:pointerover /template/ RepeatButton#PART_DecreaseButton /template/ Border#TrackBackground">
+                                <Setter Property="RenderTransform" Value="scale(1,1.5)"/>
+                            </Style>
+
+                            <Style Selector="Slider:horizontal:pointerover /template/ RepeatButton#PART_IncreaseButton /template/ Border#TrackBackground">
+                                <Setter Property="RenderTransform" Value="scale(1,1.5)"/>
+                            </Style>
+
+                            <Style Selector="Slider:horizontal:pressed /template/ RepeatButton#PART_DecreaseButton /template/ Border#TrackBackground">
+                                <Setter Property="RenderTransform" Value="scale(1,1.5)"/>
+                            </Style>
+
+                            <Style Selector="Slider:horizontal:pressed /template/ RepeatButton#PART_IncreaseButton /template/ Border#TrackBackground">
+                                <Setter Property="RenderTransform" Value="scale(1,1.5)"/>
+                            </Style>
+
+                            <Style Selector="Slider:horizontal /template/ Thumb">
+                                <Setter Property="Width" Value="12"/>
+                                <Setter Property="Height" Value="12"/>
+                                <Setter Property="Background" Value="{DynamicResource IconColor}"/>
+                                <Setter Property="RenderTransform" Value="scale(1.167,1.167)"/>
+                                <Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+                            </Style>
+
+                            <Style Selector="Slider:horizontal:pointerover /template/ Thumb">
+                                <Setter Property="RenderTransform" Value="scale(1.333,1.333)"/>
+                                <Setter Property="Background" Value="{DynamicResource IconColor}"/>
+                            </Style>
+
+                            <Style Selector="Slider:pressed /template/ Thumb">
+                                <Setter Property="RenderTransform" Value="scale(1.333,1.333)"/>
+                                <Setter Property="Background" Value="{DynamicResource IconColor}"/>
+                            </Style>
+
+                        </Slider.Styles>
+                    </Slider>
+
+                </Grid>
+            </Border>
+        </Grid>
+    </Window>
