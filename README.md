@@ -28,4 +28,4 @@ Catchy is currently under development. New features and improvements are being i
 
 ## License
 
-License information will be added later.
+Catchy is licensed under the [MIT License](LICENSE).
